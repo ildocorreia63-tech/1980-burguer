@@ -3,88 +3,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body { background:#0d0d0d; color:#fff; font-family:Arial; margin:0;}
-header { background:#ff3c00; padding:15px; text-align:center; font-size:20px; font-weight:bold;}
+header { background:#ff3c00; padding:15px; text-align:center;}
 .container { padding:10px;}
-.card { background:#1a1a1a; margin-bottom:15px; padding:15px; border-radius:12px;}
-button { padding:10px; background:#ff3c00; border:none; color:#fff; border-radius:8px;}
-.cart { background:#111; padding:15px; position:fixed; bottom:0; width:100%;}
-.finalizar { background:green; width:100%; margin-top:10px;}
-input, select { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:none;}
+.card { background:#1a1a1a; margin-bottom:10px; padding:10px; border-radius:10px;}
+button { padding:10px; background:#ff3c00; border:none; color:#fff; border-radius:5px; margin-top:5px;}
+.cart { background:#111; padding:10px; position:fixed; bottom:0; width:100%;}
 </style>
-</head><body><header>🍔 1980 Burguer - PDV</header><div class="container"><div class="card">
-<h2>X Tudo Bacon</h2>
-<p>R$19</p>
-<button onclick="add('X Tudo Bacon',19)">+</button>
+</head><body><header>🍔 1980 Burguer - Sistema Completo</header><div class="container"><div class="card">
+<h3>X Tudo Bacon (Estoque: <span id="e1">0</span>)</h3>
+<button onclick="add('X Tudo Bacon',19,'e1')">Vender</button>
+<input placeholder="Adicionar estoque" onblur="setEstoque('e1',this.value)">
 </div><div class="card">
-<h2>Chicken Bacon</h2>
-<p>R$18</p>
-<button onclick="add('Chicken Bacon',18)">+</button>
+<h3>Chicken Bacon (Estoque: <span id="e2">0</span>)</h3>
+<button onclick="add('Chicken Bacon',18,'e2')">Vender</button>
+<input placeholder="Adicionar estoque" onblur="setEstoque('e2',this.value)">
 </div></div><div class="cart"><div id="carrinho"></div>
-<div id="total"></div><select id="pagamento">
-<option>Pix</option>
-<option>Dinheiro</option>
-<option>Cartão</option>
-<option>Fiado</option>
-</select><button class="finalizar" onclick="finalizar()">Finalizar</button>
+<div id="total"></div><button onclick="finalizar()">Finalizar Venda</button>
 <button onclick="fecharCaixa()">Fechar Caixa</button>
+<button onclick="relatorio()">Relatório</button>
 
 </div><script>
 let carrinho=[];
 let total=0;
 
-function add(nome, preco){
-carrinho.push(nome);
-total+=preco;
-atualizar();
+let estoque = JSON.parse(localStorage.getItem("estoque")) || {e1:0,e2:0};
+
+function atualizarEstoque(){
+document.getElementById("e1").innerText=estoque.e1;
+document.getElementById("e2").innerText=estoque.e2;
 }
 
-function atualizar(){
+function setEstoque(id,valor){
+estoque[id]=parseInt(valor)||0;
+salvarEstoque();
+atualizarEstoque();
+}
+
+function salvarEstoque(){
+localStorage.setItem("estoque",JSON.stringify(estoque));
+}
+
+function add(nome,preco,id){
+if(estoque[id]<=0){
+alert("Sem estoque!");
+return;
+}
+
+estoque[id]--;
+total+=preco;
+carrinho.push(nome);
+
+salvarEstoque();
+atualizarEstoque();
+atualizarCarrinho();
+}
+
+function atualizarCarrinho(){
 document.getElementById("carrinho").innerHTML=carrinho.join("<br>");
 document.getElementById("total").innerHTML="Total: R$ "+total;
 }
 
-function salvarVenda(valor,pag){
+function salvarVenda(valor){
 let vendas=JSON.parse(localStorage.getItem("vendas"))||[];
-vendas.push({valor:valor,pagamento:pag,data:new Date()});
+vendas.push({valor:valor,data:new Date()});
 localStorage.setItem("vendas",JSON.stringify(vendas));
 }
 
+function imprimirPedido(texto){
+let w = window.open("", "", "width=300,height=600");
+w.document.write("<pre>"+texto+"</pre>");w.print();
+}
+
 function finalizar(){
-let pagamento=document.getElementById("pagamento").value;
+salvarVenda(total);
 
-salvarVenda(total,pagamento);
+let texto = "1980 BURGUER\n\n";
+carrinho.forEach(i=> texto += "- "+i+"\n");
+texto += "\nTotal: R$ "+total;
 
-let msg="🍔 *1980 BURGUER*%0A%0A";
-carrinho.forEach(i=>msg+="- "+i+"%0A");
-msg+="%0ATotal: R$ "+total;
-msg+="%0APagamento: "+pagamento;
-
-window.open("https://wa.me/5511939243407?text="+msg);
+imprimirPedido(texto);
 
 carrinho=[];
 total=0;
-atualizar();
+atualizarCarrinho();
 }
 
 function fecharCaixa(){
 let vendas=JSON.parse(localStorage.getItem("vendas"))||[];
+let totalDia=vendas.reduce((a,b)=>a+b.valor,0);
 
-let totalDia=0;
-let pix=0,din=0,cart=0;
+alert("💰 Total do dia: R$ "+totalDia);
+}
 
-vendas.forEach(v=>{
-totalDia+=v.valor;
-if(v.pagamento==="Pix") pix+=v.valor;
-if(v.pagamento==="Dinheiro") din+=v.valor;
-if(v.pagamento==="Cartão") cart+=v.valor;
-});
+function relatorio(){
+let vendas=JSON.parse(localStorage.getItem("vendas"))||[];
+
+let total=0;
+let qtd=vendas.length;
+
+vendas.forEach(v=> total+=v.valor);
 
 alert(
-"💰 Caixa do Dia\n\nTotal: R$ "+totalDia+
-"\nPix: "+pix+
-"\nDinheiro: "+din+
-"\nCartão: "+cart
+"📊 RELATÓRIO\n\n"+
+"Vendas: "+qtd+
+"\nTotal: R$ "+total
 );
 }
-</script></body>
+
+atualizarEstoque();
+</script>
+
+</body>
 </html>
