@@ -3,62 +3,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
-  background: #111;
+  background: #0d0d0d;
   color: #fff;
   font-family: Arial;
   margin: 0;
-}h1 {
+}header {
+background: #ff3c00;
+padding: 15px;
 text-align: center;
-color: #ff3c00;
+font-size: 20px;
+font-weight: bold;
+}
+
+.container {
+padding: 10px;
 }
 
 .card {
-background: #222;
-margin: 10px;
+background: #1a1a1a;
+margin-bottom: 15px;
 padding: 15px;
-border-radius: 10px;
+border-radius: 12px;
+}
+
+.card h2 {
+margin: 0;
+}
+
+.price {
+color: #ff3c00;
+font-weight: bold;
 }
 
 button {
 width: 100%;
 padding: 12px;
+margin-top: 10px;
 background: #ff3c00;
 border: none;
 color: #fff;
-border-radius: 5px;
+border-radius: 8px;
 font-size: 16px;
 }
 
-#carrinho {
-padding: 10px;
+.cart {
+background: #111;
+padding: 15px;
+position: fixed;
+bottom: 0;
+width: 100%;
 }
 
 .total {
 font-size: 18px;
-text-align: center;
+margin-bottom: 10px;
 }
 
 .finalizar {
 background: green;
-margin: 10px;
 }
 </style>
 
-</head><body><h1>🍔 1980 Burguer</h1><div class="card">
+</head><body><header>🍔 1980 Burguer</header><div class="container"><div class="card">
 <h2>X Tudo Bacon</h2>
-<p>R$19</p>
+<p class="price">R$19</p>
 <button onclick="add('X Tudo Bacon',19)">Adicionar</button>
 </div><div class="card">
 <h2>Chicken Bacon</h2>
-<p>R$18</p>
+<p class="price">R$18</p>
 <button onclick="add('Chicken Bacon',18)">Adicionar</button>
 </div><div class="card">
 <h2>Exterminador</h2>
-<p>R$37</p>
+<p class="price">R$37</p>
 <button onclick="add('Exterminador',37)">Adicionar</button>
-</div><hr><h2 style="text-align:center;">🛒 Carrinho</h2><div id="carrinho"></div><h3 class="total" id="total"></h3><button class="finalizar" onclick="finalizar()">Finalizar Pedido</button>
-
-<script>
+</div></div><div class="cart">
+<div id="carrinho"></div>
+<div class="total" id="total"></div>
+<button class="finalizar" onclick="finalizar()">Finalizar Pedido</button>
+</div><script>
 let itens = [];
 let total = 0;
 
@@ -66,7 +88,7 @@ function add(nome, preco){
 itens.push(nome);
 total += preco;
 
-document.getElementById("carrinho").innerHTML = itens.join("<br>");
+document.getElementById("carrinho").innerHTML = itens.join(" | ");
 document.getElementById("total").innerHTML = "Total: R$ " + total;
 }
 
