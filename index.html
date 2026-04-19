@@ -1,9 +1,62 @@
 <!DOCTYPE html><html>
-<body style="background:#111;color:#fff;text-align:center;font-family:Arial"><h1>🍔 1980 Burguer</h1><h2>X Tudo Bacon - R$19</h2>
-<button onclick="add('X Tudo Bacon',19)">Adicionar</button><h2>Chicken Bacon - R$18</h2>
-<button onclick="add('Chicken Bacon',18)">Adicionar</button><h2>Exterminador - R$37</h2>
-<button onclick="add('Exterminador',37)">Adicionar</button><hr><h2>🛒 Carrinho</h2>
-<div id="carrinho"></div><h3 id="total"></h3><button onclick="finalizar()">Finalizar Pedido</button>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  background: #111;
+  color: #fff;
+  font-family: Arial;
+  margin: 0;
+}h1 {
+text-align: center;
+color: #ff3c00;
+}
+
+.card {
+background: #222;
+margin: 10px;
+padding: 15px;
+border-radius: 10px;
+}
+
+button {
+width: 100%;
+padding: 12px;
+background: #ff3c00;
+border: none;
+color: #fff;
+border-radius: 5px;
+font-size: 16px;
+}
+
+#carrinho {
+padding: 10px;
+}
+
+.total {
+font-size: 18px;
+text-align: center;
+}
+
+.finalizar {
+background: green;
+margin: 10px;
+}
+</style>
+
+</head><body><h1>🍔 1980 Burguer</h1><div class="card">
+<h2>X Tudo Bacon</h2>
+<p>R$19</p>
+<button onclick="add('X Tudo Bacon',19)">Adicionar</button>
+</div><div class="card">
+<h2>Chicken Bacon</h2>
+<p>R$18</p>
+<button onclick="add('Chicken Bacon',18)">Adicionar</button>
+</div><div class="card">
+<h2>Exterminador</h2>
+<p>R$37</p>
+<button onclick="add('Exterminador',37)">Adicionar</button>
+</div><hr><h2 style="text-align:center;">🛒 Carrinho</h2><div id="carrinho"></div><h3 class="total" id="total"></h3><button class="finalizar" onclick="finalizar()">Finalizar Pedido</button>
 
 <script>
 let itens = [];
